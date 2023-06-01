@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ElectricVehicleRoutingTest", "ElectricVehicleRoutingTest\ElectricVehicleRoutingTest.vcxproj", "{25D446D7-4108-433E-8145-DDE5426C91F7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ElectricVehicleRoutingCore", "ElectricVehicleRoutingCore\ElectricVehicleRoutingCore.vcxproj", "{8133430D-96A3-41AF-8C1B-916E5E00F0E5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ElectricVehicleRoutingGui", "ElectricVehicleRoutingGui\ElectricVehicleRoutingGui.vcxproj", "{BEABB329-36D5-4414-8718-5059316A1FD7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{25D446D7-4108-433E-8145-DDE5426C91F7}.Debug|x64.ActiveCfg = Debug|x64
+		{25D446D7-4108-433E-8145-DDE5426C91F7}.Debug|x64.Build.0 = Debug|x64
+		{25D446D7-4108-433E-8145-DDE5426C91F7}.Debug|x86.ActiveCfg = Debug|Win32
+		{25D446D7-4108-433E-8145-DDE5426C91F7}.Debug|x86.Build.0 = Debug|Win32
+		{25D446D7-4108-433E-8145-DDE5426C91F7}.Release|x64.ActiveCfg = Release|x64
+		{25D446D7-4108-433E-8145-DDE5426C91F7}.Release|x64.Build.0 = Release|x64
+		{25D446D7-4108-433E-8145-DDE5426C91F7}.Release|x86.ActiveCfg = Release|Win32
+		{25D446D7-4108-433E-8145-DDE5426C91F7}.Release|x86.Build.0 = Release|Win32
+		{8133430D-96A3-41AF-8C1B-916E5E00F0E5}.Debug|x64.ActiveCfg = Debug|x64
+		{8133430D-96A3-41AF-8C1B-916E5E00F0E5}.Debug|x64.Build.0 = Debug|x64
+		{8133430D-96A3-41AF-8C1B-916E5E00F0E5}.Debug|x86.ActiveCfg = Debug|Win32
+		{8133430D-96A3-41AF-8C1B-916E5E00F0E5}.Debug|x86.Build.0 = Debug|Win32
+		{8133430D-96A3-41AF-8C1B-916E5E00F0E5}.Release|x64.ActiveCfg = Release|x64
+		{8133430D-96A3-41AF-8C1B-916E5E00F0E5}.Release|x64.Build.0 = Release|x64
+		{8133430D-96A3-41AF-8C1B-916E5E00F0E5}.Release|x86.ActiveCfg = Release|Win32
+		{8133430D-96A3-41AF-8C1B-916E5E00F0E5}.Release|x86.Build.0 = Release|Win32
+		{BEABB329-36D5-4414-8718-5059316A1FD7}.Debug|x64.ActiveCfg = Debug|x64
+		{BEABB329-36D5-4414-8718-5059316A1FD7}.Debug|x64.Build.0 = Debug|x64
+		{BEABB329-36D5-4414-8718-5059316A1FD7}.Debug|x86.ActiveCfg = Debug|x64
+		{BEABB329-36D5-4414-8718-5059316A1FD7}.Debug|x86.Build.0 = Debug|x64
+		{BEABB329-36D5-4414-8718-5059316A1FD7}.Release|x64.ActiveCfg = Release|x64
+		{BEABB329-36D5-4414-8718-5059316A1FD7}.Release|x64.Build.0 = Release|x64
+		{BEABB329-36D5-4414-8718-5059316A1FD7}.Release|x86.ActiveCfg = Release|x64
+		{BEABB329-36D5-4414-8718-5059316A1FD7}.Release|x86.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {44B8A94A-6F39-4FF4-8828-F129F5CF4501}
+	EndGlobalSection
+EndGlobal
