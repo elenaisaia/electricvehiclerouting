@@ -18,6 +18,29 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ChargerType.h" />
+    <ClInclude Include="include\ChargingStation.h" />
+    <ClInclude Include="include\DirectedGraphForChargingStations.h" />
+    <ClInclude Include="include\DirectedGraphForIntersections.h" />
+    <ClInclude Include="include\ElectricVehicle.h" />
+    <ClInclude Include="include\Intersection.h" />
+    <ClInclude Include="include\NextChargingStation.h" />
+    <ClInclude Include="include\OptimalTimeDijkstra.h" />
+    <ClInclude Include="include\Service.h" />
+    <ClInclude Include="include\ShortestDistanceDijkstra.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\ChargingStation.cpp" />
+    <ClCompile Include="src\DirectedGraphForChargingStations.cpp" />
+    <ClCompile Include="src\DirectedGraphForIntersections.cpp" />
+    <ClCompile Include="src\ElectricVehicle.cpp" />
+    <ClCompile Include="src\Intersection.cpp" />
+    <ClCompile Include="src\NextChargingStation.cpp" />
+    <ClCompile Include="src\OptimalTimeDijkstra.cpp" />
+    <ClCompile Include="src\Service.cpp" />
+    <ClCompile Include="src\ShortestDistanceDijkstra.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -131,12 +154,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="include\FirstClass.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\FirstClass.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

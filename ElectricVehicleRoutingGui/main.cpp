@@ -1,14 +1,14 @@
 #include "ElectricVehicleRoutingGui.h"
 #include <QtWidgets/QApplication>
-#include <FirstClass.h>
 
 int main(int argc, char *argv[])
 {
-    FirstClass c;
-    c.PrintHelloWorld();
+    Service service;
 
     QApplication a(argc, argv);
-    ElectricVehicleRoutingGui w;
+   
+    ElectricVehicleRoutingGui w{ service };
     w.show();
+
     return a.exec();
 }

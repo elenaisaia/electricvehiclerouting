@@ -1,7 +1,7 @@
 #include "ElectricVehicleRoutingGui.h"
 
-ElectricVehicleRoutingGui::ElectricVehicleRoutingGui(QWidget *parent)
-    : QMainWindow(parent)
+ElectricVehicleRoutingGui::ElectricVehicleRoutingGui(Service& service, QWidget *parent)
+    : QMainWindow(parent), service(service)
 {
     ui.setupUi(this);
 }
