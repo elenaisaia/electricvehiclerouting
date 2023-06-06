@@ -92,13 +92,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtRcc Include="ElectricVehicleRoutingGui.qrc" />
-    <QtUic Include="ElectricVehicleRoutingGui.ui" />
     <QtMoc Include="ElectricVehicleRoutingGui.h" />
     <ClCompile Include="ElectricVehicleRoutingGui.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="generatedgraph.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="ElectricVehicleRoutingGui.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ElectricVehicleRoutingGui.pri" />
+    <None Include="ElectricVehicleRoutingGui.pro" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

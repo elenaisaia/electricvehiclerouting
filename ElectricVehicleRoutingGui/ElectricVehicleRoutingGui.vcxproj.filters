@@ -26,9 +26,6 @@
     <QtRcc Include="ElectricVehicleRoutingGui.qrc">
       <Filter>Resource Files</Filter>
     </QtRcc>
-    <QtUic Include="ElectricVehicleRoutingGui.ui">
-      <Filter>Form Files</Filter>
-    </QtUic>
     <QtMoc Include="ElectricVehicleRoutingGui.h">
       <Filter>Header Files</Filter>
     </QtMoc>
@@ -43,5 +40,14 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="generatedgraph.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="ElectricVehicleRoutingGui.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ElectricVehicleRoutingGui.pro" />
+    <None Include="ElectricVehicleRoutingGui.pri" />
   </ItemGroup>
 </Project>
