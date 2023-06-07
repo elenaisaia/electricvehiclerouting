@@ -38,7 +38,7 @@ DirectedGraphForChargingStations DirectedGraphForChargingStations::getTransposed
         std::vector<NextChargingStation> values = key_values.second;
         for(NextChargingStation &station : values) {
             ChargingStation chargingStation = station.getChargingStation();
-            NextChargingStation nextChargingStation = NextChargingStation(key, station.getDistance(), station.getAvgSpeed(), station.getTime());
+            NextChargingStation nextChargingStation = NextChargingStation(key, station.getDistance(), station.getAvgSpeed(), station.getTime(), station.getMaxBatteryPercent());
             transposedGraph.addNextChargingStation(chargingStation, nextChargingStation);
         }
     }

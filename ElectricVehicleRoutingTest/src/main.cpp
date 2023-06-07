@@ -97,7 +97,7 @@ int main() {
 
     std::cout << graphTransformed.getVertexes() << " " << graphTransformed.getArches() << "\n";
     for (auto& station : graphTransformed.getVertexList()) {
-        std::cout << station.first << " " << station.second.getId() << " " << station.second.getX() << " " << station.second.getY() << " " << station.second.getOnePercentChargingTime() << "\n";
+        std::cout << station.first << " " << station.second.getId() << " " << station.second.getX() << " " << station.second.getY() << " " << station.second.getChargingTime() << "\n";
     }
 
     for (auto& vertex : graph2.getChargingStationList()) {

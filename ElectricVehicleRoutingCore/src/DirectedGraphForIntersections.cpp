@@ -67,7 +67,7 @@ DirectedGraphForIntersections DirectedGraphForIntersections::generateGraph(unsig
     DirectedGraphForIntersections g(maxDistance, noOfChargingStations + noOfIntersections);
 
     for(unsigned int i = 0; i < noOfChargingStations; i++) {
-        ChargingStation station(i, iRand(-250, 250), iRand(-250, 250), iRand(3, 10));
+        ChargingStation station(i, iRand(-250, 250), iRand(-250, 250));
         double noOfChargerTypes = fRand(0, 30);
         station.addChargerType(Normal);
         if(noOfChargerTypes > 9) {
@@ -76,6 +76,10 @@ DirectedGraphForIntersections DirectedGraphForIntersections::generateGraph(unsig
         if(noOfChargerTypes > 19) {
             station.addChargerType(Slow);
         }
+        int k = 5; //numarul de nivele de incarcare
+        ChargingTime chargingTime{ 0, 100, iRand(3, 10) };
+        station.addChargingTime(chargingTime);
+
         g.addChargingStationToChargingStationList(station);
     }
 
@@ -162,7 +166,10 @@ DirectedGraphForIntersections DirectedGraphForIntersections::readGraphFromFile(c
         double onePercentChargingTime;
         fin >> id >> x >> y >> onePercentChargingTime >> noOfChargingTypes;
 
-        ChargingStation chargingStation(id, x, y, onePercentChargingTime);
+        ChargingStation chargingStation(id, x, y);
+
+        ChargingTime chargingTime{ 0, 100, onePercentChargingTime };
+        chargingStation.addChargingTime(chargingTime);
 
         for(int j = 0; j < noOfChargingTypes; j++) {
             std::string type;
@@ -208,7 +215,7 @@ void DirectedGraphForIntersections::writeGraphToFile(const std::string& fileName
     for(auto& chargingStation : chargingStationList) {
         auto& types = chargingStation.second.getChargerTypes();
         fout << chargingStation.first << " " << chargingStation.second.getX() << " " << chargingStation.second.getY()
-             << " " << chargingStation.second.getOnePercentChargingTime() << " " << types.size() << "\n";
+            << " " << "afisare tiiiiimp" << " " << types.size() << "\n";
         for(auto type : types) {
             if(type == Normal) {
                 fout << "Normal\n";

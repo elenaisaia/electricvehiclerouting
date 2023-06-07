@@ -1,6 +1,6 @@
 #include "ChargingStation.h"
 
-ChargingStation::ChargingStation(unsigned int id, int x, int y, double onePercentChargingTime) : id(id), x(x), y(y), onePercentChargingTime(onePercentChargingTime) {}
+ChargingStation::ChargingStation(unsigned int id, int x, int y) : id(id), x(x), y(y) {}
 
 unsigned int ChargingStation::getId() const {
     return id;
@@ -14,8 +14,20 @@ int ChargingStation::getY() const {
     return y;
 }
 
-double ChargingStation::getOnePercentChargingTime() const {
-    return onePercentChargingTime;
+double ChargingStation::getChargingTime(double currentBatteryPercentage, double finalBatteryPercentage) {
+    double chargingTime = 0;
+    for (auto& charging : onePercentChargingTimes) {
+        if (finalBatteryPercentage <= charging.highLimit) {
+            if (currentBatteryPercentage >= charging.lowLimit && currentBatteryPercentage <= charging.highLimit) {
+                chargingTime += (charging.highLimit - currentBatteryPercentage) * charging.onePercentChargingTime;
+            }
+            else if (currentBatteryPercentage < charging.lowLimit) {
+                chargingTime += (charging.highLimit - charging.lowLimit) * charging.onePercentChargingTime;
+            }
+        }
+    }
+
+    return chargingTime;
 }
 
 const std::vector<ChargerType> &ChargingStation::getChargerTypes() const {
@@ -38,4 +50,9 @@ bool ChargingStation::isCompatibleWith(const ElectricVehicle& electricVehicle) {
 
 void ChargingStation::addChargerType(ChargerType chargerType) {
     chargerTypes.push_back(chargerType);
+}
+
+void ChargingStation::addChargingTime(ChargingTime chargingTime)
+{
+    onePercentChargingTimes.push_back(chargingTime);
 }

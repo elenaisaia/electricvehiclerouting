@@ -6,9 +6,14 @@
 #include "ChargerType.h"
 #include "ElectricVehicle.h"
 
+struct ChargingTime {
+    unsigned int lowLimit, highLimit;
+    double onePercentChargingTime;
+};
+
 class ChargingStation {
 public:
-    ChargingStation(unsigned int id, int x, int y, double onePercentChargingTime);
+    ChargingStation(unsigned int id, int x, int y);
 
     ChargingStation() = default;
 
@@ -18,13 +23,15 @@ public:
 
     int getY() const;
 
-    double getOnePercentChargingTime() const;
+    double getChargingTime(double currentBatteryPercentage, double finalBatteryPercentage);
 
     const std::vector<ChargerType> &getChargerTypes() const;
 
     bool isCompatibleWith(const ElectricVehicle& electricVehicle);
 
     void addChargerType(ChargerType chargerType);
+
+    void addChargingTime(ChargingTime chargingTime);
 
     bool operator==(const ChargingStation &rhs) const;
 
@@ -34,6 +41,6 @@ private:
     unsigned int id;
     int x;
     int y;
-    double onePercentChargingTime;
+    std::vector<ChargingTime> onePercentChargingTimes;
     std::vector<ChargerType> chargerTypes;
 };
