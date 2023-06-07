@@ -25,6 +25,8 @@ public:
 
     double getChargingTime(double currentBatteryPercentage, double finalBatteryPercentage);
 
+    const std::vector<ChargingTime> &getChargingTimes() const;
+
     const std::vector<ChargerType> &getChargerTypes() const;
 
     bool isCompatibleWith(const ElectricVehicle& electricVehicle);

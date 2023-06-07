@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)ElectricVehicleRoutingCore\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)ElectricVehicleRoutingCore\include;$(SolutionDir)ElectricVehicleRoutingTest\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,11 +129,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ChargingStationTest.cpp" />
+    <ClCompile Include="src\DirectedGraphForChargingStationsTest.cpp" />
+    <ClCompile Include="src\DirectedGraphForIntersectionsTest.cpp" />
+    <ClCompile Include="src\ElectricVehicleTest.cpp" />
+    <ClCompile Include="src\IntersectionTest.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\NextChargingStationTest.cpp" />
+    <ClCompile Include="src\OptimalTimeDijkstraTest.cpp" />
+    <ClCompile Include="src\ServiceTest.cpp" />
+    <ClCompile Include="src\ShortestDistanceDijkstraTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="generatedgraph.txt" />
     <Text Include="smallgraph.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ChargingStationTest.h" />
+    <ClInclude Include="include\DirectedGraphForChargingStationsTest.h" />
+    <ClInclude Include="include\DirectedGraphForIntersectionsTest.h" />
+    <ClInclude Include="include\ElectricVehicleTest.h" />
+    <ClInclude Include="include\IntersectionTest.h" />
+    <ClInclude Include="include\NextChargingStationTest.h" />
+    <ClInclude Include="include\OptimalTimeDijkstraTest.h" />
+    <ClInclude Include="include\ServiceTest.h" />
+    <ClInclude Include="include\ShortestDistanceDijkstraTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -29,7 +29,7 @@ void ElectricVehicle::addCost(unsigned int minSpeed, unsigned int maxSpeed, doub
 
 double ElectricVehicle::getCostPerTimeUnit(unsigned int speed) {
     for(auto cost : costs) {
-        if(speed > cost.minSpeed && speed < cost.maxSpeed)
+        if(speed >= cost.minSpeed && speed <= cost.maxSpeed)
             return cost.costPerTimeUnit;
     }
     return 0;

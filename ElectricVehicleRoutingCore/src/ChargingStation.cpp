@@ -17,7 +17,7 @@ int ChargingStation::getY() const {
 double ChargingStation::getChargingTime(double currentBatteryPercentage, double finalBatteryPercentage) {
     double chargingTime = 0;
     for (auto& charging : onePercentChargingTimes) {
-        if (finalBatteryPercentage <= charging.highLimit) {
+        if (finalBatteryPercentage >= charging.highLimit) {
             if (currentBatteryPercentage >= charging.lowLimit && currentBatteryPercentage <= charging.highLimit) {
                 chargingTime += (charging.highLimit - currentBatteryPercentage) * charging.onePercentChargingTime;
             }
@@ -28,6 +28,11 @@ double ChargingStation::getChargingTime(double currentBatteryPercentage, double 
     }
 
     return chargingTime;
+}
+
+const std::vector<ChargingTime> &ChargingStation::getChargingTimes() const
+{
+    return onePercentChargingTimes;
 }
 
 const std::vector<ChargerType> &ChargingStation::getChargerTypes() const {

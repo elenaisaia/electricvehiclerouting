@@ -49,10 +49,17 @@ std::vector<NextChargingStation> ShortestDistanceDijkstra::getNextChargingStatio
 
     for(auto &pair : cost) {
         if(graph.containsChargingStation(pair.first)) {
-            //if(pair.first != id && pair.second.distance <= graph.getMaxDistance()) {
-            if(pair.first != id) {
-                nextStations.emplace_back(graph.getChargingStationById(pair.first), pair.second.distance, pair.second.speed / noOfArchesFromSource[pair.first],
-                                          pair.second.distance / pair.second.speed);
+            auto chargingStation = graph.getChargingStationById(pair.first);
+            for (auto& charging : chargingStation.getChargingTimes()) {
+                //if(pair.first != id && pair.second.distance <= graph.getMaxDistance()) {
+                if (pair.first != id) {
+                    NextChargingStation nextChargingStation(chargingStation,
+                        pair.second.distance,
+                        pair.second.speed / noOfArchesFromSource[pair.first],
+                        pair.second.distance / pair.second.speed,
+                        charging.highLimit);
+                    nextStations.push_back(nextChargingStation);
+                }
             }
         }
     }
