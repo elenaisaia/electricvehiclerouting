@@ -3,7 +3,7 @@
 #include <cmath>
 #include <random>
 
-DirectedGraphForIntersections::DirectedGraphForIntersections(double maxDistance, unsigned int vertexes) : vertexes(vertexes), maxDistance(maxDistance) {}
+DirectedGraphForIntersections::DirectedGraphForIntersections(double maxDistance, unsigned int vertexes) : vertexes(vertexes), maxDistance(maxDistance), arches(0) {}
 
 unsigned int DirectedGraphForIntersections::getVertexes() const {
     return vertexes;
@@ -68,6 +68,17 @@ DirectedGraphForIntersections DirectedGraphForIntersections::generateGraph(unsig
 
     for(unsigned int i = 0; i < noOfChargingStations; i++) {
         ChargingStation station(i, iRand(-250, 250), iRand(-250, 250));
+
+        int k = 5; //numarul de nivele de incarcare e 5 => avem nivelele 0-20, 21-40, 41-60, 61-80, 81-100 %
+        double time = fRand(0.01, 0.05);
+        for (int j = 0; j < k; j++) {
+            ChargingTime chargingTime{ j * 20 + 1, (j + 1) * 20, time + j * 0.01};
+            if (j == 0) {
+                chargingTime.lowLimit = 0;
+            }
+            station.addChargingTime(chargingTime);
+        }
+
         double noOfChargerTypes = fRand(0, 30);
         station.addChargerType(Normal);
         if(noOfChargerTypes > 9) {
@@ -76,9 +87,6 @@ DirectedGraphForIntersections DirectedGraphForIntersections::generateGraph(unsig
         if(noOfChargerTypes > 19) {
             station.addChargerType(Slow);
         }
-        int k = 5; //numarul de nivele de incarcare
-        ChargingTime chargingTime{ 0, 100, iRand(3, 10) };
-        station.addChargingTime(chargingTime);
 
         g.addChargingStationToChargingStationList(station);
     }
@@ -95,7 +103,7 @@ DirectedGraphForIntersections DirectedGraphForIntersections::generateGraph(unsig
                                                      g.getChargingStationById(j).getX(), g.getChargingStationById(j).getY()) *
                                   fRand(1, sqrt(2));
                 if (distance > 0 && distance < maxDistance &&
-                    iRand(0, 99) < 50) { //adding an arch with a 20% probability
+                    iRand(0, 99) < 50) { //adding an arch with a p% probability
                     unsigned int speed = iRand(30, 131);
                     speed -= speed % 10;
                     g.addToAdjacencyList(i, j, distance, speed);
@@ -108,7 +116,7 @@ DirectedGraphForIntersections DirectedGraphForIntersections::generateGraph(unsig
             double distance = euclidean_distance(g.getChargingStationById(i).getX(), g.getChargingStationById(i).getY(),
                                                  g.getIntersectionById(j).getX(), g.getIntersectionById(j).getY()) *
                               fRand(1, sqrt(2));
-            if (distance > 0 && distance < maxDistance && iRand(0, 99) < 50) { //adding an arch with a 20% probability
+            if (distance > 0 && distance < maxDistance && iRand(0, 99) < 50) { //adding an arch with a p% probability
                 unsigned int speed = iRand(30, 131);
                 speed -= speed % 10;
                 g.addToAdjacencyList(i, j, distance, speed);
@@ -122,7 +130,7 @@ DirectedGraphForIntersections DirectedGraphForIntersections::generateGraph(unsig
             double distance = euclidean_distance(g.getIntersectionById(i).getX(), g.getIntersectionById(i).getY(),
                                                  g.getChargingStationById(j).getX(), g.getChargingStationById(j).getY()) *
                               fRand(1, sqrt(2));
-            if (distance > 0 && distance < maxDistance && iRand(0, 99) < 50) { //adding an arch with a 20% probability
+            if (distance > 0 && distance < maxDistance && iRand(0, 99) < 50) { //adding an arch with a p% probability
                 unsigned int speed = iRand(30, 131);
                 speed -= speed % 10;
                 g.addToAdjacencyList(i, j, distance, speed);
@@ -136,7 +144,7 @@ DirectedGraphForIntersections DirectedGraphForIntersections::generateGraph(unsig
                                                      g.getIntersectionById(j).getX(), g.getIntersectionById(j).getY()) *
                                   fRand(1, sqrt(2));
                 if (distance > 0 && distance < maxDistance &&
-                    iRand(0, 99) < 50) { //adding an arch with a 20% probability
+                    iRand(0, 99) < 50) { //adding an arch with a p% probability
                     unsigned int speed = iRand(30, 131);
                     speed -= speed % 10;
                     g.addToAdjacencyList(i, j, distance, speed);
@@ -161,17 +169,19 @@ DirectedGraphForIntersections DirectedGraphForIntersections::readGraphFromFile(c
     g.setArches(noOfArches);
 
     for(int i = 0; i < noOfChargingStations; i++) {
-        unsigned int id, noOfChargingTypes;
+        unsigned int id, noOfChargingTypes, noOfChargingTimes;
         int x, y;
-        double onePercentChargingTime;
-        fin >> id >> x >> y >> onePercentChargingTime >> noOfChargingTypes;
+        fin >> id >> x >> y >> noOfChargingTimes >> noOfChargingTypes;
 
         ChargingStation chargingStation(id, x, y);
 
-        ChargingTime chargingTime{ 0, 100, onePercentChargingTime };
-        chargingStation.addChargingTime(chargingTime);
+        for (int j = 0; j < noOfChargingTimes; j++) {
+            ChargingTime chargingTime;
+            fin >> chargingTime.lowLimit >> chargingTime.highLimit >> chargingTime.onePercentChargingTime;
+            chargingStation.addChargingTime(chargingTime);
+        }
 
-        for(int j = 0; j < noOfChargingTypes; j++) {
+        for (int j = 0; j < noOfChargingTypes; j++) {
             std::string type;
             fin >> type;
             if(type == "Normal") {
@@ -212,11 +222,17 @@ void DirectedGraphForIntersections::writeGraphToFile(const std::string& fileName
 
     fout << chargingStationList.size() << " " << intersectionList.size() << " " << arches << " " << maxDistance << "\n";
 
-    for(auto& chargingStation : chargingStationList) {
+    for (auto& chargingStation : chargingStationList) {
         auto& types = chargingStation.second.getChargerTypes();
+        auto& times = chargingStation.second.getChargingTimes();
         fout << chargingStation.first << " " << chargingStation.second.getX() << " " << chargingStation.second.getY()
-            << " " << "afisare tiiiiimp" << " " << types.size() << "\n";
-        for(auto type : types) {
+            << " " << times.size() << " " << types.size() << "\n";
+
+        for (auto& time : times) {
+            fout << time.lowLimit << " " << time.highLimit << " " << time.onePercentChargingTime << "\n";
+        }
+
+        for (auto& type : types) {
             if(type == Normal) {
                 fout << "Normal\n";
             }

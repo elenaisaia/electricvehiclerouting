@@ -3,6 +3,7 @@
 #include <ChargingStationTest.h>
 #include <NextChargingStationTest.h>
 #include <DirectedGraphForIntersectionsTest.h>
+#include <DirectedGraphForChargingStationsTest.h>
 
 //DirectedGraphForChargingStations readSmallGraphFromFile() {
 //    std::ifstream fin("smallgraph.txt");
@@ -141,6 +142,9 @@ int main()
 
 	DirectedGraphForIntersectionsTest directedGraphForIntersectionsTest;
 	directedGraphForIntersectionsTest.runTests();
+
+	DirectedGraphForChargingStationsTest directedGraphForChargingStationsTest;
+	directedGraphForChargingStationsTest.runTests();
 
 	return 0;
 }
