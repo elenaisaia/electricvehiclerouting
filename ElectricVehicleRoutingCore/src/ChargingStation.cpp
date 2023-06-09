@@ -14,15 +14,15 @@ int ChargingStation::getY() const {
     return y;
 }
 
-double ChargingStation::getChargingTime(double currentBatteryPercentage, double finalBatteryPercentage) {
+double ChargingStation::getChargingTime(double currentBatteryPercentage, double finalBatteryPercentage, double vehicleTime) {
     double chargingTime = 0;
     for (auto& charging : onePercentChargingTimes) {
         if (finalBatteryPercentage >= charging.highLimit) {
             if (currentBatteryPercentage >= charging.lowLimit && currentBatteryPercentage <= charging.highLimit) {
-                chargingTime += (charging.highLimit - currentBatteryPercentage) * charging.onePercentChargingTime;
+                chargingTime += (charging.highLimit - currentBatteryPercentage) * std::max(charging.onePercentChargingTime, vehicleTime);
             }
             else if (currentBatteryPercentage < charging.lowLimit) {
-                chargingTime += (charging.highLimit - charging.lowLimit) * charging.onePercentChargingTime;
+                chargingTime += (charging.highLimit - charging.lowLimit) * std::max(charging.onePercentChargingTime, vehicleTime);
             }
         }
     }

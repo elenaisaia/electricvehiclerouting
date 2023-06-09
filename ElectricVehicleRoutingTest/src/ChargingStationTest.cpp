@@ -41,9 +41,9 @@ void ChargingStationTest::runTests()
 	chargingStation.addChargingTime(ch5);
 	assert(chargingStation.getChargingTimes().size() == 5);
 
-	assert(chargingStation.getChargingTime(100, 100) == 0);
-	assert(abs(chargingStation.getChargingTime(26, 80) - 1.61) < 0.0000001);
-	assert(chargingStation.getChargingTime(30, 20) == 0);
+	assert(chargingStation.getChargingTime(100, 100, 0) == 0);
+	assert(abs(chargingStation.getChargingTime(26, 80, 0) - 1.61) < 0.0000001);
+	assert(chargingStation.getChargingTime(30, 20, 0) == 0);
 
 	ChargingStation chargingStation1(1, 20, 20);
 	assert(chargingStation == chargingStation1);

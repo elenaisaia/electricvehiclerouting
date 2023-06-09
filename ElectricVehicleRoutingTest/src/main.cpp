@@ -4,6 +4,9 @@
 #include <NextChargingStationTest.h>
 #include <DirectedGraphForIntersectionsTest.h>
 #include <DirectedGraphForChargingStationsTest.h>
+#include <ShortestDistanceDijkstraTest.h>
+#include <OptimalTimeDijkstraTest.h>
+#include <ServiceTest.h>
 
 //DirectedGraphForChargingStations readSmallGraphFromFile() {
 //    std::ifstream fin("smallgraph.txt");
@@ -145,6 +148,15 @@ int main()
 
 	DirectedGraphForChargingStationsTest directedGraphForChargingStationsTest;
 	directedGraphForChargingStationsTest.runTests();
+
+	ShortestDistanceDijkstraTest shortestDistanceDijkstraTest;
+	shortestDistanceDijkstraTest.runTests();
+
+	OptimalTimeDijkstraTest optimalTimeDijkstraTest;
+	optimalTimeDijkstraTest.runTests();
+
+	ServiceTest serviceTest;
+	serviceTest.runTests();
 
 	return 0;
 }

@@ -2,22 +2,21 @@
 #include "OptimalTimeDijkstra.h"
 
 OptimalTimeDijkstra::OptimalTimeDijkstra(ElectricVehicle &vehicle, DirectedGraphForChargingStations &graph, unsigned int sourceId, unsigned int destinationId)
-        : vehicle(vehicle), graph(graph), sourceId(sourceId), destinationId(destinationId) {
-    for (auto &vertex : graph.getVertexList()) {
-        visited[vertex.first] = false;
-    }
-}
+        : vehicle(vehicle), graph(graph), sourceId(sourceId), destinationId(destinationId) {}
 
 double OptimalTimeDijkstra::findCost() {
-    cost[sourceId] = 0;
-    visited[sourceId] = true;
+    auto sourcePair = IdPair{ sourceId, vehicle.getBatteryPercentage() };
+    cost[sourcePair] = 0;
+    visited[sourcePair] = true;
     NextChargingStation source(graph.getVertexById(sourceId), 0, 1000, 0, vehicle.getBatteryPercentage());
     queue.push(source);
 
     while (!queue.empty()) {
         ChargingStation current = queue.top().getChargingStation();
+        unsigned int currentMaxBatteryPercent = queue.top().getMaxBatteryPercent();
+        auto currentPair = IdPair{ current.getId(), currentMaxBatteryPercent };
         queue.pop();
-        visited[current.getId()] = false;
+        visited[currentPair] = false;
         for(auto &arch : graph.getAdjacentStations(current)) {
             ChargingStation next = arch.getChargingStation();
 
@@ -27,15 +26,18 @@ double OptimalTimeDijkstra::findCost() {
                 double finalBatteryPercentage = arch.getMaxBatteryPercent() - vehicleCostPerTimeUnit * arch.getTime();
 
                 if(finalBatteryPercentage >= 20 || finalBatteryPercentage >= 10 && next.getId() != destinationId) {
-                    double chargingTime = next.getChargingTime(finalBatteryPercentage, arch.getMaxBatteryPercent());
+                    double chargingTime = next.getChargingTime(finalBatteryPercentage, arch.getMaxBatteryPercent(), vehicle.getOnePercentChargingTime());
 
-                    auto newTime = cost.at(current.getId()) + arch.getTime() + chargingTime;
-                    if(cost.find(next.getId()) == cost.end() || cost.at(next.getId()) > newTime) {
-                        cost[next.getId()] = newTime;
-                        parent[next.getId()] = current.getId();
-                        if(visited.find(next.getId()) == visited.end() || !visited.at(next.getId())) {
+                    auto newCost = cost[currentPair] + arch.getTime() + chargingTime;
+                    auto nextPair = IdPair{ next.getId(), arch.getMaxBatteryPercent() };
+                    //if(cost.find(nextPair) == cost.end() || cost[nextPair] > newCost) {
+                    if(cost[nextPair] == NULL || cost[nextPair] > newCost) {
+                        cost[nextPair] = newCost;
+                        parent[nextPair] = currentPair;
+                        //if(visited.find(nextPair) == visited.end() || !visited[nextPair]) {
+                        if(visited[nextPair] == NULL || !visited[nextPair]) {
                             queue.push(arch);
-                            visited[next.getId()] = true;
+                            visited[nextPair] = true;
                         }
                     }
                 }
@@ -43,12 +45,8 @@ double OptimalTimeDijkstra::findCost() {
         }
     }
 
-    parent[sourceId] = 99999;
-    for(auto elem : cost) {
-        std::cout << elem.first << ": cost=" << elem.second << " parent=" << parent.at(elem.first) << "\n";
-    }
-
-    return cost.at(destinationId);
+    IdPair destinationPair{ destinationId, 0 };
+    return cost[destinationPair];
 }
 
 //double OptimalTimeDijkstra::findCost() {

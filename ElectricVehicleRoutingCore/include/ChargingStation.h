@@ -23,7 +23,7 @@ public:
 
     int getY() const;
 
-    double getChargingTime(double currentBatteryPercentage, double finalBatteryPercentage);
+    double getChargingTime(double currentBatteryPercentage, double finalBatteryPercentage, double vehicleTime);
 
     const std::vector<ChargingTime> &getChargingTimes() const;
 
