@@ -21,15 +21,22 @@ struct IdPair {
 namespace std {
     template<>
     struct hash<IdPair> {
-        auto operator()(const IdPair& idPair) const -> size_t {
-            return hash<string>()("" + idPair.id + idPair.maxBatteryPercentage);
+        auto operator()(const IdPair& p) const -> size_t {
+            uintmax_t hash = std::hash<unsigned int>{}(p.id);
+            hash <<= sizeof(uintmax_t) * 4;
+            hash ^= std::hash<unsigned int>{}(p.maxBatteryPercentage);
+            return std::hash<uintmax_t>{}(hash);
         }
     };
 }
 
 class OptimalTimeDijkstra {
 public:
-    OptimalTimeDijkstra(ElectricVehicle &vehicle, DirectedGraphForChargingStations &graph, unsigned int sourceId, unsigned int destinationId);
+    OptimalTimeDijkstra(ElectricVehicle &vehicle, DirectedGraphForChargingStations &graph);
+
+    void setSourceId(unsigned int id);
+
+    void setDestinationId(unsigned int id);
 
     double findCost();
 

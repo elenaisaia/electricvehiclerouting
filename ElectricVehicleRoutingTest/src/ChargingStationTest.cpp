@@ -42,6 +42,7 @@ void ChargingStationTest::runTests()
 	assert(chargingStation.getChargingTimes().size() == 5);
 
 	assert(chargingStation.getChargingTime(100, 100, 0) == 0);
+	assert(chargingStation.getChargingTime(100, 0, 0) == 0);
 	assert(abs(chargingStation.getChargingTime(26, 80, 0) - 1.61) < 0.0000001);
 	assert(chargingStation.getChargingTime(30, 20, 0) == 0);
 

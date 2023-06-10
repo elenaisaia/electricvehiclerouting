@@ -1,8 +1,18 @@
 #include <iostream>
 #include "OptimalTimeDijkstra.h"
 
-OptimalTimeDijkstra::OptimalTimeDijkstra(ElectricVehicle &vehicle, DirectedGraphForChargingStations &graph, unsigned int sourceId, unsigned int destinationId)
-        : vehicle(vehicle), graph(graph), sourceId(sourceId), destinationId(destinationId) {}
+OptimalTimeDijkstra::OptimalTimeDijkstra(ElectricVehicle &vehicle, DirectedGraphForChargingStations &graph)
+        : vehicle(vehicle), graph(graph), sourceId(0), destinationId(0) {}
+
+void OptimalTimeDijkstra::setSourceId(unsigned int id)
+{
+    sourceId = id;
+}
+
+void OptimalTimeDijkstra::setDestinationId(unsigned int id)
+{
+    destinationId = id;
+}
 
 double OptimalTimeDijkstra::findCost() {
     auto sourcePair = IdPair{ sourceId, vehicle.getBatteryPercentage() };
@@ -20,13 +30,13 @@ double OptimalTimeDijkstra::findCost() {
         for(auto &arch : graph.getAdjacentStations(current)) {
             ChargingStation next = arch.getChargingStation();
 
-
+            
             if(next.getId() == destinationId || next.isCompatibleWith(vehicle)) {
                 double vehicleCostPerTimeUnit = vehicle.getCostPerTimeUnit(arch.getAvgSpeed());
-                double finalBatteryPercentage = arch.getMaxBatteryPercent() - vehicleCostPerTimeUnit * arch.getTime();
+                double batteryPercentageBeforeCharging = currentPair.maxBatteryPercentage - vehicleCostPerTimeUnit * arch.getTime();
 
-                if(finalBatteryPercentage >= 20 || finalBatteryPercentage >= 10 && next.getId() != destinationId) {
-                    double chargingTime = next.getChargingTime(finalBatteryPercentage, arch.getMaxBatteryPercent(), vehicle.getOnePercentChargingTime());
+                if(batteryPercentageBeforeCharging >= 20 || batteryPercentageBeforeCharging >= 10 && next.getId() != destinationId) {
+                    double chargingTime = next.getChargingTime(batteryPercentageBeforeCharging, arch.getMaxBatteryPercent(), vehicle.getOnePercentChargingTime());
 
                     auto newCost = cost[currentPair] + arch.getTime() + chargingTime;
                     auto nextPair = IdPair{ next.getId(), arch.getMaxBatteryPercent() };
@@ -44,6 +54,11 @@ double OptimalTimeDijkstra::findCost() {
             }
         }
     }
+
+    /*for (auto& elem : cost) {
+        std::cout << elem.first.id << " " << elem.first.maxBatteryPercentage << "; cost: " << elem.second 
+            << "; parinte: " << parent[elem.first].id << " " << parent[elem.first].maxBatteryPercentage << "\n";
+    }*/
 
     IdPair destinationPair{ destinationId, 0 };
     return cost[destinationPair];

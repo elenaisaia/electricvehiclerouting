@@ -7,6 +7,11 @@
 void OptimalTimeDijkstraTest::runTests()
 {
 	ElectricVehicle vehicle(49, Normal, 75, 0.1);
+	vehicle.addCost(0, 30, 15);
+	vehicle.addCost(30, 60, 10);
+	vehicle.addCost(60, 80, 15);
+	vehicle.addCost(80, 100, 25);
+	vehicle.addCost(100, 130, 35);
 
 	DirectedGraphForIntersections smallgraph = DirectedGraphForIntersections::readGraphFromFile("smallgraph.txt");
 	ShortestDistanceDijkstra distanceDijkstra(smallgraph);
@@ -32,14 +37,18 @@ void OptimalTimeDijkstraTest::runTests()
 	graph.setAdjacentStations(2, distancesFrom2);
 	graph.setAdjacentStations(6, distancesFrom6);
 	
-	NextChargingStation nc0d(d, 100.125, 70, 100.125/70, 100);
-	NextChargingStation nc1d(d, 103.0776, 70, 103.0776/70, 100);
-	NextChargingStation nc2d(d, 100, 50, 100/50, 100);
+	NextChargingStation nc0d(d, 100.125, 70, 100.125/70, 0);
+	NextChargingStation nc1d(d, 103.0776, 70, 103.0776/70,0);
+	NextChargingStation nc2d(d, 100, 50, 100/50, 0);
 	graph.addNextChargingStation(cs0, nc0d);
 	graph.addNextChargingStation(cs1, nc1d);
 	graph.addNextChargingStation(cs2, nc2d);
 
-	OptimalTimeDijkstra timeDijkstra(vehicle, graph, 6, 7);
-	//assert(timeDijkstra.findCost() == 200);
-	std::cout << timeDijkstra.findCost();
+	OptimalTimeDijkstra timeDijkstra(vehicle, graph);
+
+	timeDijkstra.setSourceId(s.getId());
+	timeDijkstra.setDestinationId(d.getId());
+
+	assert(abs(timeDijkstra.findCost() - 3.17647) < 0.0001);
+	//std::cout << timeDijkstra.findCost();
 }

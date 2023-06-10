@@ -49,6 +49,7 @@
   <ItemGroup>
     <Text Include="generatedgraph.txt" />
     <Text Include="smallgraph.txt" />
+    <Text Include="vehicle.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ChargingStationTest.h">

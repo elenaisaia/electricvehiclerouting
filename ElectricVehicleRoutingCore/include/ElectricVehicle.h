@@ -11,6 +11,8 @@ struct SpeedCost {
 
 class ElectricVehicle {
 public:
+    ElectricVehicle() = default;
+
     ElectricVehicle(unsigned int id, ChargerType chargerType, unsigned int batteryPercentage, double onePercentChargingTime);
 
     unsigned int getId() const;

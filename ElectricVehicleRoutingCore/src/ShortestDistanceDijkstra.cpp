@@ -56,7 +56,7 @@ std::vector<NextChargingStation> ShortestDistanceDijkstra::getNextChargingStatio
                     NextChargingStation nextChargingStation(chargingStation,
                             pair.second.distance,
                             pair.second.speed / noOfArchesFromSource[pair.first],
-                            pair.second.distance / pair.second.speed,
+                            pair.second.distance / (pair.second.speed / noOfArchesFromSource[pair.first]),
                             charging.highLimit);
                         nextStations.push_back(nextChargingStation);
                 }
