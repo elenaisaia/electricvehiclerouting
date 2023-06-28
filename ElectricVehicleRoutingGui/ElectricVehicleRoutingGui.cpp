@@ -116,8 +116,6 @@ void ElectricVehicleRoutingGui::getInitialGraph()
             }
 
             mapScene->addLine(x1, y1, x2, y2);
-
-            
         }
     }
     /*QPen outlinePen(Qt::green);

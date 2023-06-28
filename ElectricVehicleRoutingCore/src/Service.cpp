@@ -76,12 +76,19 @@ OptimalRoute Service::findPath(unsigned int sourceId, unsigned int destinationId
 
     //se adauga destinatia in lista de noduri daca este cazul (daca nu e statie de incarcare)
     if (!initialGraph.containsChargingStation(destinationId)) {
-        auto destinationIntersection = initialGraph.getIntersectionById(sourceId);
+        auto destinationIntersection = initialGraph.getIntersectionById(destinationId);
         ChargingStation destination(destinationIntersection.getId(), destinationIntersection.getX(), destinationIntersection.getY());
         chargingStationGraph.addChargingStationToVertexList(destination);
 
         //se gasesc vecinii destinatiei si se adauga in lista de noduri
-        //de facut distance dijkstra pe graful transpus pentru setarea arcelor catre destinatie
+        //se face distance dijkstra pe graful transpus pentru setarea arcelor catre destinatie
+        DirectedGraphForIntersections transposedGraph = initialGraph.getTransposedGraph();
+        ShortestDistanceDijkstra transposedDijkstra(transposedGraph);
+        auto nodes = transposedDijkstra.getNextChargingStationsForChargingStation(destinationId);
+        for (auto& node : nodes) {
+            NextChargingStation next(destination, node.getDistance(), node.getAvgSpeed(), node.getTime(), 100);
+            chargingStationGraph.addNextChargingStation(node.getChargingStation(), next);
+        }
     }
 
     return timeDijkstra.findCost();
