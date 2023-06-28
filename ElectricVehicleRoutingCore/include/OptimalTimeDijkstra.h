@@ -18,6 +18,17 @@ struct IdPair {
     }
 };
 
+struct StoppingPoints {
+    unsigned int id;
+    double timeBeforeStop, timeAfterStop;
+    unsigned int batteryPercentageBeforeStop, batteryPercentageAfterStop;
+};
+
+struct OptimalRoute {
+    std::deque<unsigned int> path;
+    std::deque<StoppingPoints> stoppingPoints;
+};
+
 namespace std {
     template<>
     struct hash<IdPair> {
@@ -38,7 +49,7 @@ public:
 
     void setDestinationId(unsigned int id);
 
-    double findCost();
+    OptimalRoute findCost();
 
 private:
     ElectricVehicle &vehicle;
@@ -47,6 +58,8 @@ private:
     unsigned int destinationId;
     std::priority_queue<NextChargingStation> queue;
     std::unordered_map<IdPair, double> cost;
+    std::unordered_map<IdPair, double> costBeforeCharging;
+    std::unordered_map<IdPair, unsigned int> batteryBeforeCharging;
     std::unordered_map<IdPair, IdPair> parent;
     std::unordered_map<IdPair, bool> visited;
 };

@@ -50,6 +50,7 @@
     <Text Include="generatedgraph.txt" />
     <Text Include="smallgraph.txt" />
     <Text Include="vehicle.txt" />
+    <Text Include="generatedgraphfromgui.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ChargingStationTest.h">

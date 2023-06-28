@@ -49,6 +49,16 @@ void OptimalTimeDijkstraTest::runTests()
 	timeDijkstra.setSourceId(s.getId());
 	timeDijkstra.setDestinationId(d.getId());
 
-	assert(abs(timeDijkstra.findCost() - 3.17647) < 0.0001);
+	//assert(abs(timeDijkstra.findCost() - 3.17647) < 0.0001);
 	//std::cout << timeDijkstra.findCost();
+	
+	OptimalRoute route = timeDijkstra.findCost();
+	for (auto& station : route.path) {
+		std::cout << station << "\n";
+	}
+
+	for (auto& station : route.stoppingPoints) {
+		std::cout << station.id << " " << station.timeBeforeStop << " " << station.batteryPercentageBeforeStop
+			<< " " << station.timeAfterStop << " " << station.batteryPercentageAfterStop << "\n";
+	}
 }

@@ -142,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="generatedgraph.txt" />
+    <Text Include="generatedgraphfromgui.txt" />
     <Text Include="smallgraph.txt" />
     <Text Include="vehicle.txt" />
   </ItemGroup>

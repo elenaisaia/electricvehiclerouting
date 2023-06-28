@@ -22,7 +22,7 @@ public:
 
 	DirectedGraphForChargingStations& getChargingStationGraph();
 
-	double findCost(unsigned int sourceId, unsigned int destinationId);
+	OptimalRoute findPath(unsigned int sourceId, unsigned int destinationId);
 
 private:
 	ElectricVehicle vehicle;

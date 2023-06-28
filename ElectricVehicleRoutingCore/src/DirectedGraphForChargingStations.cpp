@@ -33,20 +33,6 @@ std::vector<NextChargingStation> DirectedGraphForChargingStations::getAdjacentSt
     return adjacencyList[chargingStation];
 }
 
-DirectedGraphForChargingStations DirectedGraphForChargingStations::getTransposedGraph() {
-    DirectedGraphForChargingStations transposedGraph = DirectedGraphForChargingStations(vertexes, arches);
-    for(const auto& key_values : adjacencyList) {
-        ChargingStation key = key_values.first;
-        std::vector<NextChargingStation> values = key_values.second;
-        for(NextChargingStation &station : values) {
-            ChargingStation chargingStation = station.getChargingStation();
-            NextChargingStation nextChargingStation = NextChargingStation(key, station.getDistance(), station.getAvgSpeed(), station.getTime(), station.getMaxBatteryPercent());
-            transposedGraph.addNextChargingStation(chargingStation, nextChargingStation);
-        }
-    }
-    return transposedGraph;
-}
-
 ChargingStation DirectedGraphForChargingStations::getVertexById(unsigned int id) {
     return vertexList.at(id);
 }

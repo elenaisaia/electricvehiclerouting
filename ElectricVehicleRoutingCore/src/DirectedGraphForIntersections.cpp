@@ -260,6 +260,16 @@ double DirectedGraphForIntersections::euclidean_distance(int x, int y, unsigned 
     return sqrt((x - x1) * (x - x1) + (y - y1) * (y - y1));
 }
 
+void DirectedGraphForIntersections::setIntersectionList(std::unordered_map<unsigned int, Intersection> list)
+{
+    intersectionList = list;
+}
+
+void DirectedGraphForIntersections::setChargingStationList(std::unordered_map<unsigned int, ChargingStation> list)
+{
+    chargingStationList = list;
+}
+
 double DirectedGraphForIntersections::fRand(double fMin, double fMax) {
 //    double f = (double)rand() / RAND_MAX;
 //    return fMin + f * (fMax - fMin);
@@ -289,6 +299,23 @@ void DirectedGraphForIntersections::incrementArches() {
 unsigned int DirectedGraphForIntersections::getNoOfChargingStations()
 {
     return chargingStationList.size();
+}
+
+DirectedGraphForIntersections DirectedGraphForIntersections::getTransposedGraph() {
+    DirectedGraphForIntersections transposedGraph = DirectedGraphForIntersections(maxDistance, vertexes);
+
+    transposedGraph.setIntersectionList(intersectionList);
+    transposedGraph.setChargingStationList(chargingStationList);
+
+    for (const auto& key_values : adjacencyList) {
+        unsigned int key = key_values.first;
+        std::vector<NextNode> values = key_values.second;
+        for (NextNode& station : values) {
+            transposedGraph.addToAdjacencyList(station.nextId, key, station.distance, station.speed);
+            transposedGraph.incrementArches();
+        }
+    }
+    return transposedGraph;
 }
 
 bool NextNode::operator<(const NextNode &rhs) const {

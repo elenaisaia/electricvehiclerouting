@@ -44,8 +44,6 @@ public:
 
     std::vector<NextChargingStation> getAdjacentStations(ChargingStation chargingStation);
 
-    DirectedGraphForChargingStations getTransposedGraph();
-
     ChargingStation getVertexById(unsigned int id);
 
 private:

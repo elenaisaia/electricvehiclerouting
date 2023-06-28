@@ -14,9 +14,11 @@ void OptimalTimeDijkstra::setDestinationId(unsigned int id)
     destinationId = id;
 }
 
-double OptimalTimeDijkstra::findCost() {
+OptimalRoute OptimalTimeDijkstra::findCost() {
     auto sourcePair = IdPair{ sourceId, vehicle.getBatteryPercentage() };
     cost[sourcePair] = 0;
+    costBeforeCharging[sourcePair] = 0;
+    batteryBeforeCharging[sourcePair] = 0;
     visited[sourcePair] = true;
     NextChargingStation source(graph.getVertexById(sourceId), 0, 1000, 0, vehicle.getBatteryPercentage());
     queue.push(source);
@@ -44,6 +46,10 @@ double OptimalTimeDijkstra::findCost() {
                     if(cost[nextPair] == NULL || cost[nextPair] > newCost) {
                         cost[nextPair] = newCost;
                         parent[nextPair] = currentPair;
+
+                        costBeforeCharging[nextPair] = cost[currentPair] + arch.getTime();
+                        batteryBeforeCharging[nextPair] = batteryPercentageBeforeCharging;
+
                         //if(visited.find(nextPair) == visited.end() || !visited[nextPair]) {
                         if(visited[nextPair] == NULL || !visited[nextPair]) {
                             queue.push(arch);
@@ -60,57 +66,20 @@ double OptimalTimeDijkstra::findCost() {
             << "; parinte: " << parent[elem.first].id << " " << parent[elem.first].maxBatteryPercentage << "\n";
     }*/
 
-    IdPair destinationPair{ destinationId, 0 };
-    return cost[destinationPair];
-}
+    IdPair destinationPair{ destinationId, 100 };
 
-//double OptimalTimeDijkstra::findCost() {
-//    cost[sourceId] = 0;
-//    visited[sourceId] = true;
-//    NextChargingStation source(graph.getVertexById(sourceId), 0, 1000, 0);
-//    queue.push(source);
-//
-//    while (!queue.empty()) {
-//        ChargingStation current = queue.top().getChargingStation();
-//        queue.pop();
-//        visited[current.getId()] = false;
-//        for (auto& arch : graph.getAdjacentStations(current)) {
-//            ChargingStation next = arch.getChargingStation();
-//
-//
-//            if (next.getId() == destinationId || next.isCompatibleWith(vehicle)) {
-//                double vehicleCostPerTimeUnit = vehicle.getCostPerTimeUnit(arch.getAvgSpeed());
-//                double finalBatteryPercentage;
-//                if (current.getId() == sourceId) {
-//                    finalBatteryPercentage = vehicle.getBatteryPercentage();
-//                }
-//                else {
-//                    finalBatteryPercentage = 100;
-//                }
-//                finalBatteryPercentage -= vehicleCostPerTimeUnit * arch.getTime();
-//
-//                if (finalBatteryPercentage >= 20 || finalBatteryPercentage >= 10 && next.getId() != destinationId) {
-//                    double timeForFullCharge = (100 - finalBatteryPercentage) * std::min(vehicle.getOnePercentChargingTime(),
-//                        next.getOnePercentChargingTime());
-//
-//                    auto newTime = cost.at(current.getId()) + arch.getTime() + timeForFullCharge;
-//                    if (cost.find(next.getId()) == cost.end() || cost.at(next.getId()) > newTime) {
-//                        cost[next.getId()] = newTime;
-//                        parent[next.getId()] = current.getId();
-//                        if (visited.find(next.getId()) == visited.end() || !visited.at(next.getId())) {
-//                            queue.push(arch);
-//                            visited[next.getId()] = true;
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    parent[sourceId] = 99999;
-//    for (auto elem : cost) {
-//        std::cout << elem.first << ": cost=" << elem.second << " parent=" << parent.at(elem.first) << "\n";
-//    }
-//
-//    return cost.at(destinationId);
-//}
+    //aici se creaza ruta transmisa utilizatorului parcurgand drumul inapoi in vectorul de parinti de la destinatie la sursa si culegand datele dorite
+    OptimalRoute route;
+
+    IdPair current = destinationPair;
+    route.path.push_front(destinationId);
+    route.stoppingPoints.push_front(StoppingPoints{ destinationId, costBeforeCharging[current], cost[destinationPair], batteryBeforeCharging[destinationPair], batteryBeforeCharging[destinationPair] });
+
+    while (current != sourcePair) {
+        current = parent[current];
+        route.path.push_front(current.id);
+        route.stoppingPoints.push_front(StoppingPoints{ current.id, costBeforeCharging[current], cost[current], batteryBeforeCharging[current], current.maxBatteryPercentage});
+    }
+
+    return route;
+}

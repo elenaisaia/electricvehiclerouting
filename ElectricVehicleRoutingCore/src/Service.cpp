@@ -59,26 +59,30 @@ DirectedGraphForChargingStations& Service::getChargingStationGraph()
     return chargingStationGraph;
 }
 
-double Service::findCost(unsigned int sourceId, unsigned int destinationId)
+OptimalRoute Service::findPath(unsigned int sourceId, unsigned int destinationId)
 {
     timeDijkstra.setSourceId(sourceId);
     timeDijkstra.setDestinationId(destinationId);
 
-    //se adauga sursa in lista de noduri
-    auto sourceIntersection = initialGraph.getIntersectionById(sourceId);
-    ChargingStation source(sourceIntersection.getId(), sourceIntersection.getX(), sourceIntersection.getY());
-    chargingStationGraph.addChargingStationToVertexList(source);
+    //se adauga sursa in lista de noduri daca este cazul (daca nu e statie de incarcare)
+    if (!initialGraph.containsChargingStation(sourceId)) {
+        auto sourceIntersection = initialGraph.getIntersectionById(sourceId);
+        ChargingStation source(sourceIntersection.getId(), sourceIntersection.getX(), sourceIntersection.getY());
+        chargingStationGraph.addChargingStationToVertexList(source);
 
-    //se gasesc vecinii sursei si se adauga in lista de noduri
-    chargingStationGraph.setAdjacentStations(sourceId, distanceDijkstra.getNextChargingStationsForChargingStation(sourceId));
+        //se gasesc vecinii sursei si se adauga in lista de noduri
+        chargingStationGraph.setAdjacentStations(sourceId, distanceDijkstra.getNextChargingStationsForChargingStation(sourceId));
+    }
 
-    //se adauga destinatia in lista de noduri
-    auto destinationIntersection = initialGraph.getIntersectionById(sourceId);
-    ChargingStation destination(destinationIntersection.getId(), destinationIntersection.getX(), destinationIntersection.getY());
-    chargingStationGraph.addChargingStationToVertexList(destination);
+    //se adauga destinatia in lista de noduri daca este cazul (daca nu e statie de incarcare)
+    if (!initialGraph.containsChargingStation(destinationId)) {
+        auto destinationIntersection = initialGraph.getIntersectionById(sourceId);
+        ChargingStation destination(destinationIntersection.getId(), destinationIntersection.getX(), destinationIntersection.getY());
+        chargingStationGraph.addChargingStationToVertexList(destination);
 
-    //se gasesc vecinii destinatiei si se adauga in lista de noduri
-    //de facut distance dijkstra pe graful transpus pentru setarea arcelor catre destinatie
+        //se gasesc vecinii destinatiei si se adauga in lista de noduri
+        //de facut distance dijkstra pe graful transpus pentru setarea arcelor catre destinatie
+    }
 
     return timeDijkstra.findCost();
 }

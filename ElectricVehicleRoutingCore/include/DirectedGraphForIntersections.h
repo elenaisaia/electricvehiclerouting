@@ -64,6 +64,8 @@ public:
 
     unsigned int getNoOfChargingStations();
 
+    DirectedGraphForIntersections getTransposedGraph();
+
 private:
     unsigned int vertexes;
     unsigned int arches;
@@ -77,6 +79,9 @@ private:
 
     void writeGraphToFile(const std::string& fileName) const;
     //void generateArchWithProbability(unsigned int sourceId, unsigned int destinationId, double distance);
+
+    void setIntersectionList(std::unordered_map<unsigned int, Intersection> list);
+    void setChargingStationList(std::unordered_map<unsigned int, ChargingStation> list);
 
     static double euclidean_distance(int x, int y, unsigned int x1, unsigned int y1);
     static double fRand(double fMin, double fMax);

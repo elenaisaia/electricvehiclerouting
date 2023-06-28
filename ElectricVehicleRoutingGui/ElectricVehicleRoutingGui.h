@@ -22,8 +22,6 @@ public:
     ElectricVehicleRoutingGui(Service& service, QWidget* parent = nullptr);
     ~ElectricVehicleRoutingGui();
 
-    //void paintEvent(QPaintEvent* event) override;
-
     
 private slots:
     void on_changeButton_clicked();
@@ -37,59 +35,35 @@ private:
     QGraphicsScene* mapScene;
     QGraphicsView* mapView;
 
+    void getVehicle();
+
     void getInitialGraph();
 
-    void nodeClicked(int nodeId) {
-        qInfo() << "Pressed graph node " << nodeId;
+    void getChargingstationGraph();
 
-        if (!isSourceSelected()) {
-            sourceId = nodeId;
-            return;
-        }
-
-        if (!isDestinationSelected()) {
-            destinationId = nodeId;
-            disableAllGraphNodeUi();
-
-            // aici apelez Dijkstra din service
-            qInfo() << "Source = " << sourceId << " Destination = " << destinationId;
-        }
-
-    }
+    void nodeClicked(int nodeId);
 
     class GraphNodeUi;  
     std::unordered_map<unsigned int, GraphNodeUi*> drawnPoints;
     int sourceId = -1;
     int destinationId = -1;
+    bool isSourceChargingStation = false;
+    bool isDestinationChargingStation = false;
 
-    bool isSourceSelected() {
-        return sourceId != -1;
-    }
+    bool isSourceSelected();
 
-    bool isDestinationSelected() {
-        return destinationId != -1;
-    }
+    bool isDestinationSelected();
 
-    void clearSelectedNodes() {
-        sourceId = -1;
-        destinationId = -1;
-    }
+    void clearSelectedNodes();
 
-    void enableAllGraphNodeUi() {
-        for (auto mapPair : drawnPoints) {
-            mapPair.second->enableClick();
-        }
-    }
+    void enableAllGraphNodeUi();
 
-    void disableAllGraphNodeUi() {
-        for (auto mapPair : drawnPoints) {
-            mapPair.second->disableClick();
-        }
-    }
+    void disableAllGraphNodeUi();
+
+    void clearTable();
 
     class GraphNodeUi : public QGraphicsEllipseItem {
     public:
-       
         explicit GraphNodeUi(ElectricVehicleRoutingGui* mainWindow, int nodeId, qreal x, qreal y, qreal w, qreal h, QGraphicsItem* parent = nullptr)
             : QGraphicsEllipseItem(x-w/2, y-h/2, w, h, parent), mainWindow{ mainWindow }, nodeId{ nodeId }  {
 
@@ -108,10 +82,8 @@ private:
         void enableClick() {
             QGraphicsItem::setEnabled(true);
         }
-        
 
-        private:
-
+    private:
             ElectricVehicleRoutingGui* mainWindow;
             int nodeId = -1;
     };
