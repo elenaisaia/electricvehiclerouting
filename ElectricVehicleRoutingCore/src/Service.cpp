@@ -91,5 +91,18 @@ OptimalRoute Service::findPath(unsigned int sourceId, unsigned int destinationId
         }
     }
 
-    return timeDijkstra.findCost();
+    OptimalRoute chargingStationRoute = timeDijkstra.findCost();
+
+    OptimalRoute completeRoute;
+    completeRoute.stoppingPoints = chargingStationRoute.stoppingPoints;
+    for (int i = 0; i < chargingStationRoute.path.size() - 1; i++) {
+        auto route = distanceDijkstra.getShortestPath(chargingStationRoute.path[i], chargingStationRoute.path[i + 1]);
+        for (auto elem : route) {
+            completeRoute.path.push_back(elem);
+        }
+        completeRoute.path.pop_back();
+    }
+    completeRoute.path.push_back(chargingStationRoute.path[chargingStationRoute.path.size() - 1]);
+
+    return completeRoute;
 }

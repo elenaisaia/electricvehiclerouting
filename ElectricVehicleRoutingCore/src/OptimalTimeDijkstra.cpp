@@ -36,24 +36,26 @@ OptimalRoute OptimalTimeDijkstra::findCost() {
             if(next.getId() == destinationId || next.isCompatibleWith(vehicle)) {
                 double vehicleCostPerTimeUnit = vehicle.getCostPerTimeUnit(arch.getAvgSpeed());
                 double batteryPercentageBeforeCharging = currentPair.maxBatteryPercentage - vehicleCostPerTimeUnit * arch.getTime();
+                
+                if (next.getId() == destinationId || batteryPercentageBeforeCharging < arch.getMaxBatteryPercent()) {
+                    if (batteryPercentageBeforeCharging >= 20 || batteryPercentageBeforeCharging >= 10 && next.getId() != destinationId) {
+                        double chargingTime = next.getChargingTime(batteryPercentageBeforeCharging, arch.getMaxBatteryPercent(), vehicle.getOnePercentChargingTime());
 
-                if(batteryPercentageBeforeCharging >= 20 || batteryPercentageBeforeCharging >= 10 && next.getId() != destinationId) {
-                    double chargingTime = next.getChargingTime(batteryPercentageBeforeCharging, arch.getMaxBatteryPercent(), vehicle.getOnePercentChargingTime());
+                        auto newCost = cost[currentPair] + arch.getTime() + chargingTime;
+                        auto nextPair = IdPair{ next.getId(), arch.getMaxBatteryPercent() };
+                        //if(cost.find(nextPair) == cost.end() || cost[nextPair] > newCost) {
+                        if (cost[nextPair] == NULL || cost[nextPair] > newCost) {
+                            cost[nextPair] = newCost;
+                            parent[nextPair] = currentPair;
 
-                    auto newCost = cost[currentPair] + arch.getTime() + chargingTime;
-                    auto nextPair = IdPair{ next.getId(), arch.getMaxBatteryPercent() };
-                    //if(cost.find(nextPair) == cost.end() || cost[nextPair] > newCost) {
-                    if(cost[nextPair] == NULL || cost[nextPair] > newCost) {
-                        cost[nextPair] = newCost;
-                        parent[nextPair] = currentPair;
+                            costBeforeCharging[nextPair] = cost[currentPair] + arch.getTime();
+                            batteryBeforeCharging[nextPair] = batteryPercentageBeforeCharging;
 
-                        costBeforeCharging[nextPair] = cost[currentPair] + arch.getTime();
-                        batteryBeforeCharging[nextPair] = batteryPercentageBeforeCharging;
-
-                        //if(visited.find(nextPair) == visited.end() || !visited[nextPair]) {
-                        if(visited[nextPair] == NULL || !visited[nextPair]) {
-                            queue.push(arch);
-                            visited[nextPair] = true;
+                            //if(visited.find(nextPair) == visited.end() || !visited[nextPair]) {
+                            if (visited[nextPair] == NULL || !visited[nextPair]) {
+                                queue.push(arch);
+                                visited[nextPair] = true;
+                            }
                         }
                     }
                 }

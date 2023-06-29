@@ -66,3 +66,53 @@ std::vector<NextChargingStation> ShortestDistanceDijkstra::getNextChargingStatio
 
     return nextStations;
 }
+
+std::deque<unsigned int> ShortestDistanceDijkstra::getShortestPath(unsigned int sourceId, unsigned int destinationId)
+{
+    std::priority_queue<NextNode> q;
+    std::unordered_map<unsigned int, NextNode> dist;
+    std::unordered_map<unsigned int, bool> viz;
+    std::unordered_map<unsigned int, unsigned int> parent;
+
+    dist[sourceId].distance = 0;
+    dist[sourceId].speed = 0;
+    viz[sourceId] = true;
+    parent[sourceId] = sourceId;
+    NextNode source{ 0, 0, sourceId };
+    q.push(source);
+
+    while (!q.empty()) {
+        unsigned int current = q.top().nextId;
+        q.pop();
+
+        if (current == destinationId) {
+            break;
+        }
+
+        viz[current] = false;
+        for (auto& arch : graph.getAdjacentNodes(current)) {
+            if (dist.find(arch.nextId) == dist.end() || dist[arch.nextId].distance > dist[current].distance + arch.distance) {
+                dist[arch.nextId].distance = dist[current].distance + arch.distance;
+                dist[arch.nextId].speed = dist[current].speed + arch.speed;
+                
+                if (viz.find(arch.nextId) == viz.end() || !viz.at(arch.nextId)) {
+                    q.push(arch);
+                    viz[arch.nextId] = true;
+                    parent[arch.nextId] = current;
+                }
+            }
+        }
+    }
+
+
+    std::deque<unsigned int> path;
+    unsigned int current = destinationId;
+    path.push_front(current);
+
+    while (current != sourceId) {
+        current = parent[current];
+        path.push_front(current);
+    }
+
+    return path;
+}

@@ -10,6 +10,8 @@ public:
 
     std::vector<NextChargingStation> getNextChargingStationsForChargingStation(unsigned int id);
 
+    std::deque<unsigned int> getShortestPath(unsigned int sourceId, unsigned int destinationId);
+
 private:
     DirectedGraphForIntersections &graph;
     std::priority_queue<NextNode> queue;

@@ -45,6 +45,7 @@ private:
 
     class GraphNodeUi;  
     std::unordered_map<unsigned int, GraphNodeUi*> drawnPoints;
+    std::deque<unsigned int> usedPoints;
     int sourceId = -1;
     int destinationId = -1;
     bool isSourceChargingStation = false;
@@ -62,12 +63,12 @@ private:
 
     void clearTable();
 
+    void clearPath();
+
     class GraphNodeUi : public QGraphicsEllipseItem {
     public:
         explicit GraphNodeUi(ElectricVehicleRoutingGui* mainWindow, int nodeId, qreal x, qreal y, qreal w, qreal h, QGraphicsItem* parent = nullptr)
-            : QGraphicsEllipseItem(x-w/2, y-h/2, w, h, parent), mainWindow{ mainWindow }, nodeId{ nodeId }  {
-
-        }
+            : QGraphicsEllipseItem(x - w / 2, y - h / 2, w, h, parent), mainWindow{ mainWindow }, nodeId{ nodeId }, x{ x }, y{ y } {}
         ~GraphNodeUi() = default;
 
         void mousePressEvent(QGraphicsSceneMouseEvent* event) override {
@@ -83,9 +84,19 @@ private:
             QGraphicsItem::setEnabled(true);
         }
 
+        qreal getX() {
+            return x;
+        }
+
+        qreal getY() {
+            return y;
+        }
+
     private:
             ElectricVehicleRoutingGui* mainWindow;
             int nodeId = -1;
+            qreal x;
+            qreal y;
     };
     
 };

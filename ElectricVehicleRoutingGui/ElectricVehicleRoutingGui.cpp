@@ -28,6 +28,7 @@ void ElectricVehicleRoutingGui::on_changeButton_clicked()
 {
     qInfo() << "Changing nodes";
     clearTable();
+    clearPath();
     clearSelectedNodes();
     enableAllGraphNodeUi();
 }
@@ -36,6 +37,8 @@ void ElectricVehicleRoutingGui::on_changeButton_clicked()
 void ElectricVehicleRoutingGui::on_generateButton_clicked()
 {
     qInfo() << "Changing map";
+    clearTable();
+    clearPath();
     clearSelectedNodes();
 
     //trebuie golit tot si regenerat
@@ -160,6 +163,20 @@ void ElectricVehicleRoutingGui::nodeClicked(int nodeId)
             qInfo() << station << "\n";
         }
 
+        usedPoints = route.path;
+        int pathSize = route.path.size() - 1;
+        for (int i = 0; i < pathSize; i++) {
+            QPen outlinePen(Qt::green);
+            auto p1 = drawnPoints[route.path[i]];
+            auto p2 = drawnPoints[route.path[i + 1]];
+            mapScene->addLine(p1->getX(), p1->getY(), p2->getX(), p2->getY(), outlinePen);
+            qInfo() << p1->getX() << " " << p1->getY() << " " << p2->getX() << " " << p2->getY() << "\n";
+        }
+
+        for (auto point : drawnPoints) {
+            qInfo() << point << "\n";
+        }
+
         ui.tableWidget->setRowCount(route.stoppingPoints.size());
         /*int i = 0;
         for (auto& station : route.stoppingPoints) {
@@ -250,3 +267,14 @@ void ElectricVehicleRoutingGui::clearTable()
     ui.tableWidget->setRowCount(0);
 }
 
+void ElectricVehicleRoutingGui::clearPath()
+{
+    int dim = usedPoints.size() - 1;
+    for (int i = 0; i < dim; i++) {
+        auto p1 = drawnPoints[usedPoints[i]];
+        auto p2 = drawnPoints[usedPoints[i + 1]];
+        mapScene->addLine(p1->getX(), p1->getY(), p2->getX(), p2->getY());
+        qInfo() << p1->getX() << " " << p1->getY() << " " << p2->getX() << " " << p2->getY() << "\n";
+    }
+    usedPoints.clear();
+}
