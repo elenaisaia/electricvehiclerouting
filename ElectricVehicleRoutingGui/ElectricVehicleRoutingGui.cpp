@@ -282,6 +282,8 @@ void ElectricVehicleRoutingGui::nodeClicked(int nodeId)
                 << " " << station.timeAfterStop << " " << station.batteryPercentageAfterStop << "\n";
             ui.tableWidget->setItem(routeSize, 0, new QTableWidgetItem("min " + QString::number(int(station.timeBeforeStop)) + ", battery " + QString::number(station.batteryPercentageBeforeStop) + "%"));
             ui.tableWidget->setItem(routeSize, 1, new QTableWidgetItem("-"));
+
+            //double time = station
         }
         else {
             QMessageBox msgBox;

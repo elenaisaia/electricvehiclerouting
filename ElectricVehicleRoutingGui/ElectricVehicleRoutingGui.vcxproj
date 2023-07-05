@@ -98,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="generatedgraph.txt" />
+    <Text Include="initialgraph.txt" />
     <Text Include="smallgraph.txt" />
     <Text Include="vehicle.txt" />
   </ItemGroup>

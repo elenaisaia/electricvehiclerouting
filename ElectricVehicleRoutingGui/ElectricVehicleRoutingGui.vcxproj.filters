@@ -42,6 +42,7 @@
     <Text Include="generatedgraph.txt" />
     <Text Include="smallgraph.txt" />
     <Text Include="vehicle.txt" />
+    <Text Include="initialgraph.txt" />
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="ElectricVehicleRoutingGui.ui">
