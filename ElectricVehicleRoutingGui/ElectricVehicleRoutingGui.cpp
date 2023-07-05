@@ -283,7 +283,10 @@ void ElectricVehicleRoutingGui::nodeClicked(int nodeId)
             ui.tableWidget->setItem(routeSize, 0, new QTableWidgetItem("min " + QString::number(int(station.timeBeforeStop)) + ", battery " + QString::number(station.batteryPercentageBeforeStop) + "%"));
             ui.tableWidget->setItem(routeSize, 1, new QTableWidgetItem("-"));
 
-            //double time = station
+            int time = (int)(station.timeBeforeStop);
+            int hours = time / 60;
+            int minutes = time % 60;
+            ui.plainTextEdit->setPlainText(QString::fromStdString(std::to_string(hours) + "h " + std::to_string(minutes) + "min "));
         }
         else {
             QMessageBox msgBox;
@@ -347,6 +350,7 @@ void ElectricVehicleRoutingGui::disableAllGraphNodeUi()
 void ElectricVehicleRoutingGui::clearTable()
 {
     ui.tableWidget->setRowCount(0);
+    ui.plainTextEdit->clear();
 }
 
 void ElectricVehicleRoutingGui::clearPath()
