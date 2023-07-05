@@ -18,6 +18,8 @@ public:
 
 	DirectedGraphForIntersections& getInitialGraph(std::string filename);
 
+	DirectedGraphForIntersections& generateInitialGraph(unsigned int noOfChargingStations, unsigned int noOfIntersections, double maxDistance, std::string filename);
+
 	void initChargingStationGraph();
 
 	DirectedGraphForChargingStations& getChargingStationGraph();

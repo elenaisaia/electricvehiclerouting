@@ -1,4 +1,5 @@
 #include "ElectricVehicleRoutingGui.h"
+#include <QMessageBox>
 
 
 ElectricVehicleRoutingGui::ElectricVehicleRoutingGui(Service& service, QWidget *parent)
@@ -42,6 +43,12 @@ void ElectricVehicleRoutingGui::on_generateButton_clicked()
     clearSelectedNodes();
 
     //trebuie golit tot si regenerat
+    mapScene->clear();
+    drawnPoints.clear();
+    
+
+    generateInitialGraph();
+
 }
 
 
@@ -53,7 +60,7 @@ void ElectricVehicleRoutingGui::getVehicle()
 
 void ElectricVehicleRoutingGui::getInitialGraph()
 {
-    DirectedGraphForIntersections& g = service.getInitialGraph("generatedgraph.txt");
+    DirectedGraphForIntersections& g = service.getInitialGraph("initialgraph.txt");
     for (auto& list : g.getAdjacencyList()) {
         int x1, y1, x2, y2, id1, id2;
         bool isCh1 = false, isCh2 = false;
@@ -121,12 +128,78 @@ void ElectricVehicleRoutingGui::getInitialGraph()
             mapScene->addLine(x1, y1, x2, y2);
         }
     }
-    /*QPen outlinePen(Qt::green);
-    mapScene->addLine(-53, -217, -69, -66, outlinePen);
-    mapScene->addLine(-69, -66, -100, 7, outlinePen);
-    mapScene->addLine(-100, 7, 10, 103, outlinePen);
-    mapScene->addLine(10, 103, 90, 92, outlinePen);
-    mapScene->addLine(90, 92, 37, 214, outlinePen);*/
+}
+
+void ElectricVehicleRoutingGui::generateInitialGraph()
+{
+    DirectedGraphForIntersections& g = service.generateInitialGraph(20, 20, 200, "generatedgraph.txt");
+    for (auto& list : g.getAdjacencyList()) {
+        int x1, y1, x2, y2, id1, id2;
+        bool isCh1 = false, isCh2 = false;
+        if (g.containsChargingStation(list.first)) {
+            ChargingStation ch1 = g.getChargingStationById(list.first);
+            x1 = ch1.getX();
+            y1 = ch1.getY();
+            id1 = ch1.getId();
+            isCh1 = true;
+        }
+        else {
+            Intersection i1 = g.getIntersectionById(list.first);
+            x1 = i1.getX();
+            y1 = i1.getY();
+            id1 = i1.getId();
+            isCh1 = false;
+        }
+
+        for (auto& arch : list.second) {
+            if (g.containsChargingStation(arch.nextId)) {
+                ChargingStation ch2 = g.getChargingStationById(arch.nextId);
+                x2 = ch2.getX();
+                y2 = ch2.getY();
+                id2 = ch2.getId();
+                isCh2 = true;
+            }
+            else {
+                Intersection i2 = g.getIntersectionById(arch.nextId);
+                x2 = i2.getX();
+                y2 = i2.getY();
+                id2 = i2.getId();
+                isCh2 = false;
+            }
+
+
+
+            if (!drawnPoints[id1]) {
+                auto point1 = new GraphNodeUi(this, id1, x1, y1, 10, 10);
+                if (isCh1) {
+                    point1->setPen(Qt::NoPen);
+                    point1->setBrush(Qt::green);
+                }
+                else {
+                    point1->setPen(Qt::NoPen);
+                    point1->setBrush(Qt::black);
+                }
+                mapScene->addItem(point1);
+                drawnPoints[id1] = point1;
+            }
+
+            if (!drawnPoints[id2]) {
+                auto point2 = new GraphNodeUi(this, id2, x2, y2, 10, 10);
+                if (isCh2) {
+                    point2->setPen(Qt::NoPen);
+                    point2->setBrush(Qt::green);
+                }
+                else {
+                    point2->setPen(Qt::NoPen);
+                    point2->setBrush(Qt::black);
+                }
+                mapScene->addItem(point2);
+                drawnPoints[id2] = point2;
+            }
+
+            mapScene->addLine(x1, y1, x2, y2);
+        }
+    }
 }
 
 void ElectricVehicleRoutingGui::getChargingstationGraph()
@@ -159,55 +232,62 @@ void ElectricVehicleRoutingGui::nodeClicked(int nodeId)
 
         // aici apelez Dijkstra din service
         auto route = service.findPath(sourceId, destinationId);
-        for (auto& station : route.path) {
-            qInfo() << station << "\n";
-        }
+        if(route.path[0] != -1) {
+            for (auto& station : route.path) {
+                qInfo() << station << "\n";
+            }
 
-        usedPoints = route.path;
-        int pathSize = route.path.size() - 1;
-        for (int i = 0; i < pathSize; i++) {
-            QPen outlinePen(Qt::green);
-            auto p1 = drawnPoints[route.path[i]];
-            auto p2 = drawnPoints[route.path[i + 1]];
-            mapScene->addLine(p1->getX(), p1->getY(), p2->getX(), p2->getY(), outlinePen);
-            qInfo() << p1->getX() << " " << p1->getY() << " " << p2->getX() << " " << p2->getY() << "\n";
-        }
+            usedPoints = route.path;
+            int pathSize = route.path.size() - 1;
+            for (int i = 0; i < pathSize; i++) {
+                QPen outlinePen(Qt::green);
+                auto p1 = drawnPoints[route.path[i]];
+                auto p2 = drawnPoints[route.path[i + 1]];
+                mapScene->addLine(p1->getX(), p1->getY(), p2->getX(), p2->getY(), outlinePen);
+                qInfo() << p1->getX() << " " << p1->getY() << " " << p2->getX() << " " << p2->getY() << "\n";
+            }
 
-        for (auto point : drawnPoints) {
-            qInfo() << point << "\n";
-        }
+            for (auto point : drawnPoints) {
+                qInfo() << point << "\n";
+            }
 
-        ui.tableWidget->setRowCount(route.stoppingPoints.size());
-        /*int i = 0;
-        for (auto& station : route.stoppingPoints) {
-            qInfo() << station.id << " " << station.timeBeforeStop << " " << station.batteryPercentageBeforeStop 
-                                  << " " << station.timeAfterStop << " " << station.batteryPercentageAfterStop << "\n";
-            ui.tableWidget->setItem(i, 0, new QTableWidgetItem("min " + QString::number(station.timeBeforeStop) + ", battery " + QString::number(station.batteryPercentageBeforeStop) + "%"));
-            ui.tableWidget->setItem(i, 1, new QTableWidgetItem("min " + QString::number(station.timeAfterStop) + ", battery " + QString::number(station.batteryPercentageAfterStop) + "%"));
-            i++;
-        }*/
+            ui.tableWidget->setRowCount(route.stoppingPoints.size());
+            /*int i = 0;
+            for (auto& station : route.stoppingPoints) {
+                qInfo() << station.id << " " << station.timeBeforeStop << " " << station.batteryPercentageBeforeStop 
+                                      << " " << station.timeAfterStop << " " << station.batteryPercentageAfterStop << "\n";
+                ui.tableWidget->setItem(i, 0, new QTableWidgetItem("min " + QString::number(station.timeBeforeStop) + ", battery " + QString::number(station.batteryPercentageBeforeStop) + "%"));
+                ui.tableWidget->setItem(i, 1, new QTableWidgetItem("min " + QString::number(station.timeAfterStop) + ", battery " + QString::number(station.batteryPercentageAfterStop) + "%"));
+                i++;
+            }*/
 
-        auto& station = route.stoppingPoints[0];
-        qInfo() << station.id << " " << station.timeBeforeStop << " " << station.batteryPercentageBeforeStop
-            << " " << station.timeAfterStop << " " << station.batteryPercentageAfterStop << "\n";
-        ui.tableWidget->setItem(0, 0, new QTableWidgetItem("-"));
-        ui.tableWidget->setItem(0, 1, new QTableWidgetItem("min " + QString::number(int(station.timeAfterStop)) + ", battery " + QString::number(station.batteryPercentageAfterStop) + "%"));
-
-        int routeSize = route.stoppingPoints.size() - 1;
-        for (int i = 1; i < routeSize; i++) {
-            station = route.stoppingPoints[i];
+            auto& station = route.stoppingPoints[0];
             qInfo() << station.id << " " << station.timeBeforeStop << " " << station.batteryPercentageBeforeStop
                 << " " << station.timeAfterStop << " " << station.batteryPercentageAfterStop << "\n";
-            ui.tableWidget->setItem(i, 0, new QTableWidgetItem("min " + QString::number(int(station.timeBeforeStop)) + ", battery " + QString::number(station.batteryPercentageBeforeStop) + "%"));
-            ui.tableWidget->setItem(i, 1, new QTableWidgetItem("min " + QString::number(int(station.timeAfterStop)) + ", battery " + QString::number(station.batteryPercentageAfterStop) + "%"));
-            i++;
-        }
+            ui.tableWidget->setItem(0, 0, new QTableWidgetItem("-"));
+            ui.tableWidget->setItem(0, 1, new QTableWidgetItem("min " + QString::number(int(station.timeAfterStop)) + ", battery " + QString::number(station.batteryPercentageAfterStop) + "%"));
 
-        station = route.stoppingPoints[routeSize];
-        qInfo() << station.id << " " << station.timeBeforeStop << " " << station.batteryPercentageBeforeStop
-            << " " << station.timeAfterStop << " " << station.batteryPercentageAfterStop << "\n";
-        ui.tableWidget->setItem(routeSize, 0, new QTableWidgetItem("min " + QString::number(int(station.timeBeforeStop)) + ", battery " + QString::number(station.batteryPercentageBeforeStop) + "%"));
-        ui.tableWidget->setItem(routeSize, 1, new QTableWidgetItem("-"));
+            int routeSize = route.stoppingPoints.size() - 1;
+            for (int i = 1; i < routeSize; i++) {
+                station = route.stoppingPoints[i];
+                qInfo() << station.id << " " << station.timeBeforeStop << " " << station.batteryPercentageBeforeStop
+                    << " " << station.timeAfterStop << " " << station.batteryPercentageAfterStop << "\n";
+                ui.tableWidget->setItem(i, 0, new QTableWidgetItem("min " + QString::number(int(station.timeBeforeStop)) + ", battery " + QString::number(station.batteryPercentageBeforeStop) + "%"));
+                ui.tableWidget->setItem(i, 1, new QTableWidgetItem("min " + QString::number(int(station.timeAfterStop)) + ", battery " + QString::number(station.batteryPercentageAfterStop) + "%"));
+                i++;
+            }
+
+            station = route.stoppingPoints[routeSize];
+            qInfo() << station.id << " " << station.timeBeforeStop << " " << station.batteryPercentageBeforeStop
+                << " " << station.timeAfterStop << " " << station.batteryPercentageAfterStop << "\n";
+            ui.tableWidget->setItem(routeSize, 0, new QTableWidgetItem("min " + QString::number(int(station.timeBeforeStop)) + ", battery " + QString::number(station.batteryPercentageBeforeStop) + "%"));
+            ui.tableWidget->setItem(routeSize, 1, new QTableWidgetItem("-"));
+        }
+        else {
+            QMessageBox msgBox;
+            msgBox.setText("There aren't any available routes! :<");
+            msgBox.exec();
+        }
     }
 }
 

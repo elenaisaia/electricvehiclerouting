@@ -45,6 +45,12 @@ DirectedGraphForIntersections& Service::getInitialGraph(std::string filename)
     return initialGraph;
 }
 
+DirectedGraphForIntersections& Service::generateInitialGraph(unsigned int noOfChargingStations, unsigned int noOfIntersections, double maxDistance, std::string filename)
+{
+    initialGraph = DirectedGraphForIntersections::generateGraph(noOfChargingStations, noOfIntersections, maxDistance, filename);
+    return initialGraph;
+}
+
 void Service::initChargingStationGraph()
 {
     chargingStationGraph.setVertexList(initialGraph.getChargingStationList());
@@ -94,15 +100,21 @@ OptimalRoute Service::findPath(unsigned int sourceId, unsigned int destinationId
     OptimalRoute chargingStationRoute = timeDijkstra.findCost();
 
     OptimalRoute completeRoute;
-    completeRoute.stoppingPoints = chargingStationRoute.stoppingPoints;
-    for (int i = 0; i < chargingStationRoute.path.size() - 1; i++) {
-        auto route = distanceDijkstra.getShortestPath(chargingStationRoute.path[i], chargingStationRoute.path[i + 1]);
-        for (auto elem : route) {
-            completeRoute.path.push_back(elem);
+
+    if (chargingStationRoute.path[0] != -1) {
+        completeRoute.stoppingPoints = chargingStationRoute.stoppingPoints;
+        for (int i = 0; i < chargingStationRoute.path.size() - 1; i++) {
+            auto route = distanceDijkstra.getShortestPath(chargingStationRoute.path[i], chargingStationRoute.path[i + 1]);
+            for (auto elem : route) {
+                completeRoute.path.push_back(elem);
+            }
+            completeRoute.path.pop_back();
         }
-        completeRoute.path.pop_back();
+        completeRoute.path.push_back(chargingStationRoute.path[chargingStationRoute.path.size() - 1]);
     }
-    completeRoute.path.push_back(chargingStationRoute.path[chargingStationRoute.path.size() - 1]);
+    else {
+        completeRoute.path.push_back(-1);
+    }
 
     return completeRoute;
 }

@@ -39,6 +39,8 @@ private:
 
     void getInitialGraph();
 
+    void generateInitialGraph();
+
     void getChargingstationGraph();
 
     void nodeClicked(int nodeId);
@@ -67,7 +69,7 @@ private:
 
     class GraphNodeUi : public QGraphicsEllipseItem {
     public:
-        explicit GraphNodeUi(ElectricVehicleRoutingGui* mainWindow, int nodeId, qreal x, qreal y, qreal w, qreal h, QGraphicsItem* parent = nullptr)
+        GraphNodeUi(ElectricVehicleRoutingGui* mainWindow, int nodeId, qreal x, qreal y, qreal w, qreal h, QGraphicsItem* parent = nullptr)
             : QGraphicsEllipseItem(x - w / 2, y - h / 2, w, h, parent), mainWindow{ mainWindow }, nodeId{ nodeId }, x{ x }, y{ y } {}
         ~GraphNodeUi() = default;
 

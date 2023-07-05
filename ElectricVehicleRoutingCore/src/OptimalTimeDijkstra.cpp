@@ -74,13 +74,19 @@ OptimalRoute OptimalTimeDijkstra::findCost() {
     OptimalRoute route;
 
     IdPair current = destinationPair;
-    route.path.push_front(destinationId);
-    route.stoppingPoints.push_front(StoppingPoints{ destinationId, costBeforeCharging[current], cost[destinationPair], batteryBeforeCharging[destinationPair], batteryBeforeCharging[destinationPair] });
 
-    while (current != sourcePair) {
-        current = parent[current];
-        route.path.push_front(current.id);
-        route.stoppingPoints.push_front(StoppingPoints{ current.id, costBeforeCharging[current], cost[current], batteryBeforeCharging[current], current.maxBatteryPercentage});
+    if (costBeforeCharging[destinationPair]) {
+        route.path.push_front(destinationId);
+        route.stoppingPoints.push_front(StoppingPoints{ destinationId, costBeforeCharging[destinationPair], cost[destinationPair], batteryBeforeCharging[destinationPair], batteryBeforeCharging[destinationPair] });
+
+        while (current != sourcePair) {
+            current = parent[current];
+            route.path.push_front(current.id);
+            route.stoppingPoints.push_front(StoppingPoints{ current.id, costBeforeCharging[current], cost[current], batteryBeforeCharging[current], current.maxBatteryPercentage });
+        }
+    }
+    else {
+        route.path.push_front(-1);
     }
 
     return route;
